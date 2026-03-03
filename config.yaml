@@ -1,0 +1,23 @@
+telegram:
+  token: ""
+  allowed_users: []
+
+whisper:
+  model: "base"
+  language: "de"
+
+dashboard:
+  host: "0.0.0.0"
+  port: 8080
+
+database:
+  path: "data/loop.db"
+
+tmux:
+  session_prefix: "loop"
+  claude_command: "claude --dangerously-skip-permissions"
+
+orchestrator:
+  poll_interval_ms: 500
+  max_parallel_sessions: 4
+  auto_approve_permissions: true
