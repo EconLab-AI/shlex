@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Automation Loop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <header class="bg-gray-800 border-b border-gray-700 px-6 py-4">
+        <h1 class="text-xl font-bold">Coding Automation Loop</h1>
+        <p class="text-gray-400 text-sm">Live Dashboard</p>
+    </header>
+    <main class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <section class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+            <h2 class="text-lg font-semibold mb-3">Active Tasks</h2>
+            <div id="tasks"><p class="text-gray-500">Loading...</p></div>
+        </section>
+        <section class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+            <h2 class="text-lg font-semibold mb-3">Live Sessions</h2>
+            <div id="sessions"><p class="text-gray-500">Loading...</p></div>
+        </section>
+        <section class="bg-gray-800 rounded-lg p-4 border border-gray-700 lg:col-span-2">
+            <h2 class="text-lg font-semibold mb-3">Event Log</h2>
+            <div id="events" class="font-mono text-sm max-h-96 overflow-y-auto">
+                <p class="text-gray-500">Loading...</p>
+            </div>
+        </section>
+    </main>
+    <script>
+        async function refresh() {
+            const [tasks, sessions, events] = await Promise.all([
+                fetch('/api/tasks').then(r => r.json()),
+                fetch('/api/sessions').then(r => r.json()),
+                fetch('/api/events').then(r => r.json()),
+            ]);
+            document.getElementById('tasks').innerHTML = tasks.length
+                ? tasks.map(t => `<div class="bg-gray-700 rounded p-2 mb-1"><span class="font-medium">${t.title}</span> <span class="text-xs px-2 py-0.5 rounded ${t.status==='running'?'bg-blue-600':t.status==='done'?'bg-green-600':'bg-gray-600'}">${t.status}</span></div>`).join('')
+                : '<p class="text-gray-500">No active tasks</p>';
+            document.getElementById('sessions').innerHTML = sessions.length
+                ? sessions.map(s => `<div class="bg-gray-700 rounded p-2 mb-1"><span class="font-mono text-sm">${s.tmux_pane}</span> <span class="text-xs px-2 py-0.5 rounded ${s.status==='running'?'bg-blue-600':'bg-gray-600'}">${s.status}</span></div>`).join('')
+                : '<p class="text-gray-500">No active sessions</p>';
+            document.getElementById('events').innerHTML = events.length
+                ? events.map(e => `<div class="text-gray-300"><span class="text-gray-500">${new Date(e.timestamp).toLocaleTimeString()}</span> <span class="text-blue-400 ml-2">${e.event_type}</span></div>`).join('')
+                : '<p class="text-gray-500">No events yet</p>';
+        }
+        refresh();
+        const ws = new WebSocket(`ws://${location.host}/ws`);
+        ws.onmessage = () => refresh();
+        setInterval(refresh, 5000);
+    </script>
+</body>
+</html>
