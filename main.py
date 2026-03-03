@@ -35,7 +35,6 @@ class Orchestrator:
         self._prompt_gen = PromptGenerator()
         self._planner = TaskPlanner()
         self._output_parser = OutputParser()
-        self._decision_engine = DecisionEngine()
         self._session_mgr = SessionManager(
             tmux=self._tmux, db=self._db, event_bus=self._bus,
             claude_command=self._config.get("tmux", {}).get(
@@ -86,6 +85,8 @@ class Orchestrator:
             await asyncio.sleep(1)
 
     async def stop(self) -> None:
+        if not self._running:
+            return
         self._running = False
         self._tmux.cleanup_all()
         await self._db.close()
@@ -129,13 +130,13 @@ class Orchestrator:
     async def _monitor_session(self, task: Task, session) -> None:
         poll_ms = self._config.get("orchestrator", {}).get("poll_interval_ms", 500)
         poll_s = poll_ms / 1000
-        self._decision_engine.reset()
+        decision_engine = DecisionEngine()
 
         while self._running:
             await asyncio.sleep(poll_s)
             output = self._session_mgr.capture_output(session)
             parse_result = self._output_parser.parse(output)
-            decision = self._decision_engine.decide(parse_result)
+            decision = decision_engine.decide(parse_result)
 
             if decision.type == DecisionType.COMPLETE:
                 task.status = TaskStatus.DONE

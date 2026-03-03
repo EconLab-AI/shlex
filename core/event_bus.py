@@ -27,7 +27,11 @@ class EventBus:
         handlers = list(self._handlers.get(event.event_type, []))
         handlers.extend(self._global_handlers)
         for handler in handlers:
-            try:
-                asyncio.create_task(handler(event))
-            except Exception:
-                logger.exception("Handler failed for event %s", event.event_type)
+            asyncio.create_task(self._safe_dispatch(handler, event))
+
+    @staticmethod
+    async def _safe_dispatch(handler: Handler, event: Event) -> None:
+        try:
+            await handler(event)
+        except Exception:
+            logger.exception("Handler failed for event %s", event.event_type)

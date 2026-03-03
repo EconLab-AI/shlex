@@ -1,7 +1,7 @@
 # tests/test_decision_engine.py
 import pytest
 
-from execution.decision_engine import DecisionEngine, Decision, DecisionType
+from execution.decision_engine import DecisionEngine, DecisionType
 from execution.output_parser import ParseResult, OutputSignal
 
 

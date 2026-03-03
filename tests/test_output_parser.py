@@ -1,4 +1,3 @@
-import pytest
 
 from execution.output_parser import OutputParser, OutputSignal
 

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import shlex
 from datetime import datetime, timezone
 
 from core.models import Task, Session, SessionStatus, Event, EventType
@@ -32,7 +33,7 @@ class SessionManager:
         session.prompt_sent = prompt
         session.status = SessionStatus.RUNNING
 
-        self._tmux.send_keys(pane_id, f"{self._claude_cmd} '{prompt}'")
+        self._tmux.send_keys(pane_id, f"{self._claude_cmd} {shlex.quote(prompt)}")
 
         await self._db.save_session(session)
         await self._bus.publish(Event(

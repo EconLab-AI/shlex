@@ -1,6 +1,5 @@
 # tests/test_context_engine.py
 import pytest
-import os
 
 from brain.context_engine import ContextEngine
 

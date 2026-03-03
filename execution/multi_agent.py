@@ -55,7 +55,7 @@ class MultiAgentOrchestrator:
         lead_prompt = (
             f"Du bist der Lead-Agent fuer: {task.title}\n"
             f"Teilaufgaben:\n" + "\n".join(f"- {s}" for s in subtasks) +
-            f"\n\nKoordiniere die Ausfuehrung."
+            "\n\nKoordiniere die Ausfuehrung."
         )
         lead_task = Task(title=f"Lead: {task.title}", parent_id=task.id)
         lead_session = await self._sm.start_session(lead_task, lead_prompt)

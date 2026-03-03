@@ -1,5 +1,4 @@
 # tests/test_integration.py
-import pytest
 import asyncio
 
 from core.event_bus import EventBus

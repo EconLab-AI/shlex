@@ -1,4 +1,3 @@
-import pytest
 
 from input.telegram_bot import TelegramInput, parse_command
 

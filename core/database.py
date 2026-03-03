@@ -6,8 +6,7 @@ import logging
 import aiosqlite
 
 from core.models import (
-    Task, TaskStatus, Session, Event, EventType,
-    ErrorMemory, Reflection,
+    Task, TaskStatus, Session, Event, ErrorMemory, Reflection,
 )
 
 logger = logging.getLogger(__name__)

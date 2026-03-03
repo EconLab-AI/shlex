@@ -26,8 +26,6 @@ async def cli_main():
         return
 
     # Submit task via orchestrator
-    from core.event_bus import EventBus
-    from core.models import Event, EventType
     print(f"Submitting task: {arg}")
     # For CLI usage, we just print what would happen
     print(f"Would create TASK_NEW event with raw_input='{arg}'")
