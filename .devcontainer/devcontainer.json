@@ -1,0 +1,27 @@
+{
+  "name": "shlex Dev",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "forwardPorts": [8000, 8080],
+  "portsAttributes": {
+    "8000": { "label": "FastAPI Server", "onAutoForward": "notify" },
+    "8080": { "label": "code-server", "onAutoForward": "silent" }
+  },
+  "postCreateCommand": "pip install -e . && curl -fsSL https://code-server.dev/install.sh | sh",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 4,
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
+      },
+      "extensions": [
+        "charliermarsh.ruff",
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ]
+    }
+  }
+}
